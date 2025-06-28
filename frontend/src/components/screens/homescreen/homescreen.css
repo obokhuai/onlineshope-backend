@@ -1,0 +1,22 @@
+.home-screen {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-screen h1 {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #222;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.product-grid-item {
+  display: flex;
+  justify-content: center;
+}
