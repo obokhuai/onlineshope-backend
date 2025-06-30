@@ -1,17 +1,26 @@
 import { PRODUCTS_URL } from "../constants"
 import { apiSlice } from "./api-slice"
+import { ProductType } from "../components/product/product"
 
-// NOTE: these are the _SAME_ API reference!
-const productSlice = apiSlice.injectEndpoints({
+
+
+export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.query({
+    getProducts: builder.query<ProductType[],void>({
       query: () => ({
         url:PRODUCTS_URL
       }),
        keepUnusedDataFor: 5,
     }),
+    getProductDetails: builder.query({
+      query: (productId) => ({
+          url:`${PRODUCTS_URL}/${productId}`
+      }),
+      keepUnusedDataFor: 5,
+      })
   }),
+
   
 })
 
-export const { useGetProductsQuery, } = productSlice
+export const { useGetProductsQuery, useGetProductDetailsQuery } = productsApiSlice

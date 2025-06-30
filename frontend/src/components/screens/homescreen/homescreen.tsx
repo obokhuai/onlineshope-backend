@@ -1,48 +1,34 @@
-import React, { useEffect, useState } from "react";
-import Product from "../../product/product";
 import "./homescreen.css";
-import { ProductType } from "../../../../src/components/types/products";
-
+import { useGetProductsQuery } from "../../../../src/slices/product-slice";
+import Product from "../../product/product";
 const HomeScreen: React.FC = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("")
+  const { data: products, isLoading, error } = useGetProductsQuery();
 
-  console.log("object", products);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch("/api/products");
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        const data = await response.json();
-        setProducts(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch products"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  console.log("products", products);
 
   return (
     <div className="home-screen">
-      <h1>Latest Products</h1>
-      <div className="product-grid">
-        {products.map((product: ProductType) => (
-          <div className="product-grid-item" key={product._id}>
-            <Product product={product} />
+      {isLoading ? (
+        <h2>Loading...</h2>
+      ) : error ? (
+        <div>
+          {(error as any)?.data?.message ||
+            (error as any)?.error ||
+            "An error occurred"}
+        </div>
+      ) : (
+        <>
+          <h1>Latest Products</h1>
+          <div className="product-grid">
+            {products &&
+              products.map((product) => (
+                <div className="product-grid-item" key={product._id}>
+                  <Product product={product} />
+                </div>
+              ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 };
