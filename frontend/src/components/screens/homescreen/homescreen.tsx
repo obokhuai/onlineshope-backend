@@ -1,25 +1,29 @@
 import "./homescreen.css";
 import { useGetProductsQuery } from "../../../../src/slices/product-slice";
 import Product from "../../product/product";
+import Loader from "../../spinner/spinner";
+import Message from "../../message/message";
 const HomeScreen: React.FC = () => {
   const { data: products, isLoading, error } = useGetProductsQuery();
 
-  console.log("products", products);
+  console.log("data",products)
+
+  console.log("productsP", products);
 
   return (
     <div className="home-screen">
       {isLoading ? (
-        <h2>Loading...</h2>
+        <Loader/>
       ) : error ? (
-        <div>
+        <Message variant="danger">
           {(error as any)?.data?.message ||
             (error as any)?.error ||
             "An error occurred"}
-        </div>
+        </Message>
       ) : (
         <>
           <h1>Latest Products</h1>
-          <div className="product-grid">
+              <div className="product-grid">
             {products &&
               products.map((product) => (
                 <div className="product-grid-item" key={product._id}>

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // This describes what an item in an order looks like
-interface IOrderItem {
+export interface IOrderItem {
   name: string;
   qty: number;
   image: string;

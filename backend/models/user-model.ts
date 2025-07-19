@@ -1,50 +1,60 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-// This describes what a User looks like in our database
-interface IUser extends mongoose.Document {
+export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   isAdmin: boolean;
-  // This is a function to check if a password matches
+  createdAt: Date;
+  updatedAt: Date;
   matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
-// This is the blueprint for User documents in MongoDB
-const userSchema = new mongoose.Schema(
+const userSchema: Schema<IUser> = new mongoose.Schema(
   {
-    name: { type: String, required: true },        // User's name
-    email: { type: String, required: true, unique: true }, // User's email (must be unique)
-    password: { type: String, required: true },    // User's password (will be hashed)
-    isAdmin: { type: Boolean, required: true, default: false }, // Is this user an admin?
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 
-// This function checks if the entered password matches the stored hashed password
+// Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (
   enteredPassword: string
 ): Promise<boolean> {
-  // bcrypt.compare checks if the password is correct
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
-// Before saving a user, hash the password if it was changed or is new
-userSchema.pre('save', async function (next) {
-  // Only hash the password if it was changed
+  
+// Encrypt password using bcrypt before saving
+userSchema.pre<IUser>('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
-  // Create a salt and hash the password
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-// This creates the User model so we can use it in our app
 const User = mongoose.model<IUser>('User', userSchema);
 
 export default User;

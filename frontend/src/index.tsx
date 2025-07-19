@@ -13,12 +13,29 @@ import {
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
+import CartScreen from "./components/screens/cart-screen/cart-screen";
+import LoginScreen from "./components/screens/login-screen/login-screen";
+import RegisterScreen from "./components/screens/register-screen/register-screen";
+import ShippingScreen from "./components/screens/shipping-screen/shipping-screen";
+import PrivateRoute from "./components/private-route/private-route";
+import PaymentScreen from "./components/screens/payment-screen/payment-screen";
+
+
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<HomeScreen />} />
       <Route path="/product/:id" element={<Productscreen />} />
+      <Route path="/cart" element={<CartScreen />} />
+      <Route path="/login" element={<LoginScreen />} />
+      <Route path="/register" element={<RegisterScreen />} />
+      {/* Protected Routes */}
+      <Route path="" element={<PrivateRoute/>}>
+      <Route path="/shipping" element={<ShippingScreen />} />
+      <Route path="/payment" element={<PaymentScreen />} />
+      </Route>
     </Route>
   )
 );

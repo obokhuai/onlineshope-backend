@@ -2,15 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Rating from "../rating/rating";
 import "./product.css";
-
-export interface ProductType {
-  _id: string;
-  name: string;
-  image: string;
-  rating: number;
-  numReviews: number;
-  price: number;
-}
+import { ProductType } from "../types/products";
 
 interface ProductProps {
   product: ProductType;

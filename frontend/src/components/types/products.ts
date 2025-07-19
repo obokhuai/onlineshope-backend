@@ -1,5 +1,5 @@
 export interface ProductType {
-  _id: string;
+  _id: string ;
   name: string;
   image: string;
   description: string;
@@ -10,3 +10,12 @@ export interface ProductType {
   rating: number;
   numReviews: number;
 }
+
+export interface ShippingAddress {
+  address: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+  // Add other fields if needed
+}
+
