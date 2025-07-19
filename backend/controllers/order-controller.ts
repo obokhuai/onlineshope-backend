@@ -2,10 +2,11 @@ import { Request, Response } from "express";
 import asyncHandler from "../middleware/async-handler";
 import Product from "../models/product-model";
 import Order from "../models/order-model";
-import { IOrderItem } from "../models/order-model";
-
-
-
+import { AuthenticatedRequest } from "./user-controller";
+import { IOrder } from "../models/order-model";
+import { calcPrices } from "../utils/calc-prices";
+import { verifyPayPalPayment } from "../utils/paypal";
+import { checkIfNewTransaction } from "../utils/paypal";
 
 //import { calcPrices } from '../utils/calcPrices.js';
 //import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
@@ -13,7 +14,7 @@ import { IOrderItem } from "../models/order-model";
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
-const addOrderItems = asyncHandler(async (req:Request, res:Response) => {
+const addOrderItems = asyncHandler(async (req:AuthenticatedRequest, res:Response) => {
   const { orderItems, shippingAddress, paymentMethod } = req.body;
 
   if (orderItems && orderItems.length === 0) {
@@ -38,7 +39,7 @@ const addOrderItems = asyncHandler(async (req:Request, res:Response) => {
       return {
         ...itemFromClient,
         product: itemFromClient._id,
-        price: matchingItemFromDB.price,
+        price: matchingItemFromDB?.price,
         _id: undefined,
       };
     });
@@ -49,7 +50,7 @@ const addOrderItems = asyncHandler(async (req:Request, res:Response) => {
 
     const order = new Order({
       orderItems: dbOrderItems,
-      user: req.user._id,
+      user: req?.user?._id,
       shippingAddress,
       paymentMethod,
       itemsPrice,
@@ -67,9 +68,9 @@ const addOrderItems = asyncHandler(async (req:Request, res:Response) => {
 // @desc    Get logged in user orders
 // @route   GET /api/orders/myorders
 // @access  Private
-const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id });
-  res.json(orders);
+const getMyOrders = asyncHandler(async (req:AuthenticatedRequest, res:Response) => {
+  const orders = await Order.find({ user: req?.user?._id });
+  res.status(200).json(orders);
 });
 
 // @desc    Get order by ID
@@ -110,7 +111,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     if (!paidCorrectAmount) throw new Error('Incorrect amount paid');
 
     order.isPaid = true;
-    order.paidAt = Date.now();
+    order.paidAt =  new Date();
     order.paymentResult = {
       id: req.body.id,
       status: req.body.status,
@@ -119,7 +120,6 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     };
 
     const updatedOrder = await order.save();
-
     res.json(updatedOrder);
   } else {
     res.status(404);
@@ -135,7 +135,8 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 
   if (order) {
     order.isDelivered = true;
-    order.deliveredAt = Date.now();
+    order.deliveredAt = new Date();
+
 
     const updatedOrder = await order.save();
 

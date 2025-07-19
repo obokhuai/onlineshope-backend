@@ -26,7 +26,7 @@ interface IPaymentResult {
 }
 
 // This describes what an order looks like in our database
-interface IOrder extends mongoose.Document {
+export interface IOrder extends mongoose.Document {
   user: mongoose.Types.ObjectId; 
   orderItems: IOrderItem[];
   shippingAddress: IShippingAddress;

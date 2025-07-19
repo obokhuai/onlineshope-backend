@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
-import productRoutes from "./routes/product-routes"
 import dotenv from "dotenv";
 import connectDB from './config/db';
 import { notFound ,errorHandler} from './middleware/error-middleware';
 dotenv.config()
+import productRoutes from "./routes/product-routes"
 import userRoutes from "./routes/user-routes"
+import orderRoutes from "./routes/order-routes"
 import cookieParser from 'cookie-parser';
 
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 
 app.use('/api/products', productRoutes);   
 app.use("/api/users", userRoutes)
+app.use("/api/orders", orderRoutes)
 
 app.get('/', (req, res) => {
   res.send('API is running...');
