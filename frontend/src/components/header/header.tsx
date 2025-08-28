@@ -11,6 +11,7 @@ import { useLogoutMutation } from '../../slices/users-api-slice';
 import './header.css';
 import { logout } from "../../slices/auth-slice";
 import { RootState } from "../../store";
+import SearchBox from "../search-box/search-box";
 
 const Header: React.FC = () => {
   const { cartItems } = useSelector((state: RootState) => state.cart);
@@ -68,7 +69,7 @@ const Header: React.FC = () => {
             <span className="navbar-title">JosGlamsShop</span>
           </Link>
           <div className="navbar-links">
-            {/* <SearchBox /> */}
+            <SearchBox />
             <Link className="nav-link" to="/cart">
               <FaShoppingCart /> Cart
               {cartItems.length > 0 && (

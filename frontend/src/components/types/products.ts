@@ -11,6 +11,19 @@ export interface ProductType {
   numReviews: number;
 }
 
+export interface Review {
+  _id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface ExtendedProductType extends ProductType {
+  reviews: Review[];
+}
+
+
 export interface ShippingAddress {
   address: string;
   city?: string;

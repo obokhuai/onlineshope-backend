@@ -98,13 +98,10 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   // the order as paid
   const { verified, value } = await verifyPayPalPayment(req.body.id);
   if (!verified) throw new Error('Payment not verified');
-
   // check if this transaction has been used before
   const isNewTransaction = await checkIfNewTransaction(Order, req.body.id);
   if (!isNewTransaction) throw new Error('Transaction has been used before');
-
   const order = await Order.findById(req.params.id);
-
   if (order) {
     // check the correct amount was paid
     const paidCorrectAmount = order.totalPrice.toString() === value;
@@ -120,7 +117,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     };
 
     const updatedOrder = await order.save();
-    res.json(updatedOrder);
+    res.status(200).json(updatedOrder);
   } else {
     res.status(404);
     throw new Error('Order not found');
@@ -152,7 +149,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({}).populate('user', 'id name');
-  res.json(orders);
+  res.status(200).json(orders);
 });
 
 export {

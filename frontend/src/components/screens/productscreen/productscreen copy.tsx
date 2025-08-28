@@ -9,7 +9,6 @@ import Loader from '../../spinner/spinner';
 import Message from '../../message/message';
 import { addToCart } from '../../../slices/cart-slice';
 import { ExtendedProductType } from '../../types/products';
-import Meta from '../../meta/meta';
 
 const ProductScreen: React.FC = () => {
   const { id: productId } = useParams();
@@ -20,7 +19,6 @@ const ProductScreen: React.FC = () => {
   const [qty, setQty] = useState<number>(1);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
-
 
   const {
     data: product,
@@ -36,8 +34,7 @@ const ProductScreen: React.FC = () => {
 
   const { userInfo } = useSelector((state: any) => state.auth);
 
-  const [createReview, { isLoading: loadingProductReview }] =
-    useCreateReviewMutation();
+  const [createReview, { isLoading: loadingProductReview }] = useCreateReviewMutation();
 
   const addToCartHandler = () => {
     if (product) {
@@ -66,18 +63,17 @@ const ProductScreen: React.FC = () => {
 
   return (
     <>
-      <Link to="/" className="btn btn-light my-3">
+      <Link className="btn-light my-3" to="/">
         Go Back
       </Link>
       {isLoading ? (
         <Loader />
       ) : error ? (
         <Message variant="danger">
-          {error?.data?.message || error.error}
+          {(error as any)?.data?.message || (error as any)?.error || 'An error occurred'}
         </Message>
       ) : product ? (
         <>
-          <Meta title={product.name} description={product.description} />
           <div className="row">
             <div className="col-6">
               <img src={product.image} alt={product.name} className="img-fluid" />
@@ -91,7 +87,7 @@ const ProductScreen: React.FC = () => {
                   <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                 </li>
                 <li className="list-group-item">Price: ${product.price}</li>
-                <li className="list-group-item">{product.description}</li>
+                <li className="list-group-item">Description: {product.description}</li>
               </ul>
             </div>
             <div className="col-3">
@@ -99,9 +95,7 @@ const ProductScreen: React.FC = () => {
                 <ul className="list-group flush">
                   <li className="list-group-item row">
                     <span>Price:</span>
-                    <span>
-                      <strong>${product.price}</strong>
-                    </span>
+                    <span><strong>${product.price}</strong></span>
                   </li>
                   <li className="list-group-item row">
                     <span>Status:</span>
@@ -115,7 +109,7 @@ const ProductScreen: React.FC = () => {
                         onChange={(e) => setQty(Number(e.target.value))}
                         className="form-control-select"
                       >
-                           {Array.from({ length: product.countInStock }, (_, i) => (
+                        {Array.from({ length: product.countInStock }, (_, i) => (
                           <option key={i + 1} value={i + 1}>
                             {i + 1}
                           </option>
@@ -125,10 +119,10 @@ const ProductScreen: React.FC = () => {
                   )}
                   <li className="list-group-item">
                     <button
-                      disabled={product.countInStock === 0}
-                      onClick={addToCartHandler}
                       className="btn btn-block"
                       type="button"
+                      disabled={product.countInStock === 0}
+                      onClick={addToCartHandler}
                     >
                       Add To Cart
                     </button>
@@ -141,9 +135,9 @@ const ProductScreen: React.FC = () => {
           <div className="review-row">
             <div className="col-6">
               <h2>Reviews</h2>
-              {/* {product.reviews.length === 0 && <Message>No Reviews</Message>} */}
+              {product.reviews.length === 0 && <Message>No Reviews</Message>}
               <ul className="list-group flush">
-               {product.reviews.map((review) => (
+                {product.reviews.map((review) => (
                   <li key={review._id} className="list-group-item">
                     <strong>{review.name}</strong>
                     <Rating value={review.rating} />
@@ -156,7 +150,7 @@ const ProductScreen: React.FC = () => {
                   {loadingProductReview && <Loader />}
                   {userInfo ? (
                     <form onSubmit={submitHandler}>
-                      <div className="form-group my-2">
+                      <div className="form-group">
                         <label htmlFor="rating">Rating</label>
                         <select
                           id="rating"
