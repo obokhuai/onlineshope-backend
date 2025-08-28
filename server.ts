@@ -8,7 +8,7 @@ import productRoutes from "./routes/product-routes"
 import userRoutes from "./routes/user-routes"
 import orderRoutes from "./routes/order-routes"
 import cookieParser from 'cookie-parser';
-import uploadRoutes from "./routes/upload-route"
+//import uploadRoutes from "./routes/upload-route"
 
 
 const port = process.env.PORT || 5000;
@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use('/api/products', productRoutes);   
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
-app.use("/api/upload", uploadRoutes)
+//app.use("/api/upload", uploadRoutes)
 
 app.get('/api/config/paypal', (req:any, res:any) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
