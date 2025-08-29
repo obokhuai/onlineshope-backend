@@ -25,7 +25,6 @@
     "dotenv": "^16.5.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2"
-    
   },
   "scripts": {
     "start": "tsx server.ts",
@@ -33,7 +32,8 @@
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "tsx seeder.ts",
-    "data:destroy": "tsx seeder.ts -d"
+    "data:destroy": "tsx seeder.ts -d",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
